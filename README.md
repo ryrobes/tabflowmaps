@@ -2,14 +2,34 @@
 
 A simple visualizer for your Tableau dashboard actions relationships and how they impact the data flow.
 
-![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
-![teaser-image4](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb1.png?raw=true)
+Tableau's dashboard "action" system, when combined with parameters, calculated fields, and filter inputs allows for some very complex interactions to be orchestrated. The problem is that Tableau really doesn't give you a very good way to holistically look at all those UX relationships and how they interact together.
 
-## Try it out live at http://tabflowmaps.com/ 
+Enter Flow Maps - a simple viewer that attempts to fill this gap - even if only for a knowledge transfer / documentaion sake.
+
+## Flow Maps is trying to answer these kind of questions:
+
+### When a user interacts with a (source) Worksheet
+- What fields are involved?
+- What other worksheets does this target
+- What action (or actions) is responsible?
+
+### When a user triggers a Set Parameter action
+- What are the downstream worksheets affected by this (since they use the param in question - directly or indirectly)
+
+### When a user interacts with a filter widget
+- What worksheets 
+
+### And more abstractly: Do any of these interactions clash?
+
+
+![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb-double.png?raw=true)
+
+Try it out live at http://tabflowmaps.com/ 
 
 ![teaser-image2](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/tfm-logo.png?raw=true)
 
-### Small backend required also
+## Backend server required also
+
 https://github.com/ryrobes/tabflowmapssvc 
 
 ## To Compile

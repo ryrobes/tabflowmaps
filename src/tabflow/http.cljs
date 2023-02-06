@@ -43,7 +43,7 @@
                        :status "success"}))))))
 
 (re-frame/reg-event-fx
- ::load ;; load an already processed TWB->EDN file in webroot, not server.
+ ::load ;; load a pre-processed TWB->EDN file from webroot, not from REST server.
  (fn [{:keys [db]} [_]]
    (let [method :get
          url (str url-base "/US_Superstore_14.twb.edn")]
@@ -87,7 +87,7 @@
                            :status "success"}))))))
 
 (re-frame/reg-event-fx
- ::proc-twb
+ ::proc-twb ;; send uploaded file data to the REST server to send back modded EDN
  (fn [{:keys [db]} [_ fname fdata]]
    (when (cstr/ends-with? (cstr/lower-case fname) ".twb")
      (let [method :post

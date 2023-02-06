@@ -26,15 +26,18 @@
 
 (re-frame/reg-sub
  ::dashboards
- (fn [db] (get-in db [:twb-root :dashboards])))
+ (fn [db] 
+   (get-in db [:twb-root :dashboards])))
 
 (re-frame/reg-sub
  ::actions
- (fn [db] (get-in db [:twb-root :actions])))
+ (fn [db] 
+   (get-in db [:twb-root :actions])))
 
 (re-frame/reg-sub
  ::file-name
- (fn [db] (get db :twb-file)))
+ (fn [db] 
+   (get db :twb-file)))
 
 (re-frame/reg-sub
  ::req-running?
@@ -44,15 +47,16 @@
 
 (re-frame/reg-sub
  ::worksheets
- (fn [db] (get-in db [:twb-root :worksheets])))
+ (fn [db] 
+   (get-in db [:twb-root :worksheets])))
 
 (re-frame/reg-sub
  ::worksheet-parameters
  (fn [db] (let [members (doall (vec (apply concat (for [k (get-in db [:twb-root :dashboards])]
                                                     (remove nil? (into []
-                                                                       (for [v (get-in db [:twb-root :dashboards (key k) :datasource-dependencies])]
-                                                                         (when (not (empty? (select-keys v [:column-attrs])))
-                                                                           (merge v {:dashboard (key k)})))))))))
+                                                                       (for [v (get-in db [:twb-root :dashboards (key k) :datasource-dependencies])
+                                                                             :when (not (empty? (select-keys v [:column-attrs])))]
+                                                                         (merge v {:dashboard (key k)}))))))))
                 mm (into {} (for [e members
                                   :when (not (nil? (get-in e [:column-attrs :name])))]
                               {[(get-in e [:column-attrs :name]) (get e :dashboard)]
@@ -85,10 +89,8 @@
  ::objects-in-dashboard
  (fn [db [_ dashboard-name type]]
    (let [base (into {} (distinct (for [e (filter #(some (fn [x] (= x :name)) %) (keypaths (get-in db [:twb-root :dashboards dashboard-name])))]
-     {(vec (apply merge [:twb-root :dashboards dashboard-name] e)) 
-      (get-in db (vec (apply merge [:twb-root :dashboards dashboard-name] e)))}
-                        ;(get-in db (vec (apply merge [:twb-root :dashboards dashboard-name] e)))
-                        )))
+                                   {(vec (apply merge [:twb-root :dashboards dashboard-name] e))
+                                    (get-in db (vec (apply merge [:twb-root :dashboards dashboard-name] e)))})))
          type-filter (cond (= type :worksheets) (vec (distinct (vals (filter #(cstr/includes? (str (key %)) ":zone") base))))
                            (= type :fields) (vec (distinct (vals (filter #(not (cstr/includes? (str (key %)) ":zone")) base))))
                            :else base)]
@@ -184,10 +186,10 @@
                                                      action-name (str action-key)
                                                      related-action-selected? (some #(= % action-name) actions-involved)
                                                      fieldsets-map {:filter-left
-                                                                    {:x (+ 0 x) ;; 300 is block width
+                                                                    {:x (+ 0 x)
                                                                      :y (+ 35 y)}
                                                                     :filter-right
-                                                                    {:x (+ 360 x) ;; 300 is block width
+                                                                    {:x (+ 360 x)
                                                                      :y (+ 35 y)}}
                                                      flags (-> []
                                                                (conj (if related-action-selected? :related-action-selected nil)))
@@ -213,7 +215,9 @@
                                                    :name action-name
                                                    :flags flags
                                                    :command command}})))}
-
+        ;;;; TODO - all this extra data manuip is very hacky, redundant at times - soruce maps to be refactored to better reflect the eventual usage patterns
+        ;;;; (but converting an ugly and convoluted XML file to EDN certainly doesn't help!)
+         
         ;;;; source-worksheets
          worksheets (select-keys worksheets dash-sheets)
          worksheet-keys (remove nil? (keys worksheets))
@@ -226,7 +230,7 @@
          lines-all (apply + (for [[_ v] (sort-by key actions-all2)]
                               (count v)))
          pos-worksheet-build-map (fn [b]
-                                   (let [x 20 ;(rand-int 120) ;20
+                                   (let [x 20
                                          worksheet-name (str (nth worksheet-keys b))
                                          lines-up-to-now (apply + (for [[k v] (sort-by key actions-all2)
                                                                         :when (< k b)]
@@ -237,8 +241,8 @@
                                              (+ (* b 60) (* 27 lines-up-to-now)))
                                          fieldsets-map (into {} (for [f (range (count fieldsets))]
                                                                   {(first (nth fieldsets f))
-                                                                   {:x (+ 360 x) ;; 300 is block width
-                                                                    :y (+ 62 (if (= f 0) y  ;; 66 is header height
+                                                                   {:x (+ 360 x)
+                                                                    :y (+ 62 (if (= f 0) y
                                                                                  (+ y (* f 21))))}}))
                                          flags (remove nil? (-> []
                                                                 (conj (if (some #(= % worksheet-name)
@@ -289,8 +293,8 @@
                                                                        (+ (* b 60) (* 27 lines-up-to-now)))
                                                                    fieldsets-map (into {} (for [f (range (count fieldsets))]
                                                                                             {(first (nth fieldsets f))
-                                                                                             {:x (+ 0 x) ;; 300 is block width
-                                                                                              :y (+ 66 (if (= f 0) y  ;; 66 is header height
+                                                                                             {:x (+ 0 x)
+                                                                                              :y (+ 66 (if (= f 0) y
                                                                                                            (+ y (* f 20))))}}))
                                                                    flags (remove nil? (-> []
                                                                                           (conj (if (some #(= % worksheet-name) target-worksheets-all) :target-sheet? nil))
@@ -325,10 +329,9 @@
                                                                         (* b 75))
                                                                    fieldsets-map (into {} (for [f (range (count fieldsets))]
                                                                                             {(first (nth fieldsets f))
-                                                                                             {:x (+ 360 x) ;; 300 is block width
-                                                                                              :y (+ 40 (if (= f 0) y  ;; 40 is header height
+                                                                                             {:x (+ 360 x)
+                                                                                              :y (+ 40 (if (= f 0) y
                                                                                                            (+ y (* f 20))))}}))]
-                                                               ;(tap> [:ff worksheet-filter-name target-sheets])
                                                                {worksheet-filter-name (merge {:type (if param? :parameter :worksheet-filter)
                                                                                               :id b :x x :y y
                                                                                               :caption (get filter-data :caption (str "(" (get filter-data :role) ")"))
@@ -345,7 +348,6 @@
                                                                                                                       (> the-keys mxks) mxks
                                                                                                                       :else the-keys)
                                                                                                            cnts (keyword (str ckey))]
-                                                                                                ;(tap> [the-keys ks mnks mxks ckey scm cnts])
                                                                                                        (get-in db/colorbrewer [scm cnts b]))
                                                                                               :target-sheets target-sheets
                                                                                               :fieldsets-map fieldsets-map
@@ -363,7 +365,6 @@
                                                                                                 :when (some #(= k %) (deep-flatten v1))] k1)))}
                                                            {:deep-downstream (vec (remove nil? (for [[k1 v1] (get-in db [:twb-root :worksheets])
                                                                                                      :when (cstr/includes? (str v1) (str k))] k1)))})}))}]
-     ;(tap> [:params-up  params-up params-up-assoc params-up-assoc1])
      (merge pos-action-blocks pos-worksheet-blocks pos-worksheet-filters pos-target-worksheets params))))
 
 
@@ -413,7 +414,6 @@
          filter->target-coords (apply concat filter->target-coords)
          coords (vec (filter #(not (nil? (nth % 0))) ;; coords w no source...
                              (into action->special-coords (into filter->target-coords (into source->action-coords action->target-coords)))))]
-     ;(tap> [:action->special-coords action->special-coords])
      (tap> coords)
      coords)))
 
@@ -437,8 +437,7 @@
      (str type (if (not (nil? auto-clear)) (str " (auto-clear " auto-clear ")") "")))))
 
 (defn box [type id name x y flags fieldsets color]
-  (let [;rows (count fieldsets)
-        selected-dash @(re-frame/subscribe [::selected-dash])
+  (let [selected-dash @(re-frame/subscribe [::selected-dash])
         position-map @(re-frame/subscribe [::position-map selected-dash])
         ttype (try (first type) (catch :default _ type))
         tid [ttype name]
@@ -548,8 +547,9 @@
                                  [re-com/h-box
                                   :gap "5px"
                                   :justify :between
-                                  :style {:padding-left "3px" :padding-right "3px" :padding-top "3px"
-                                          ;:background-color "maroon"
+                                  :style {:padding-left "3px" 
+                                          :padding-right "3px" 
+                                          :padding-top "3px"
                                           :border-top "1px dashed #00000045"}
                                   :children (if (= ttype :source-worksheet)
                                               [label-box field-box]
@@ -738,7 +738,7 @@
                                  :onChange #(reset! basic-block-color %)}]]])
                            (when @options? [re-com/gap :size "10px"])]]
         :style {:color "#ffffff"
-                :background-color "#302c4180" ; "#eeeeee15"
+                :background-color "#302c4180"
                 :z-index 39900
                 :border-radius "0px 0px 0px 12px"
                 :position "fixed" :right 0 :top 60} :width "250px"])
@@ -749,7 +749,7 @@
    :padding "8px 15px 8px 18px"
    :size "auto"
    :style {:color "#ffffff"
-           :background-color "#302c4180" ; "#eeeeee15"
+           :background-color "#302c4180"
            :z-index 39900
            :font-size "17px"
            :border-radius "12px 0px 0px 0px"
@@ -791,8 +791,6 @@
              ;:filter "drop-shadow(0.6rem 0.6rem 0.6rem rgba(0, 0, 0, 0.66))"
              :box-shadow (str "0 0 50px 15px " "#000000")
              :color "white"}
-     ;:align :center :justify :center
-     ;:height (px hhh)
      :width (px www)
      :child [re-com/v-box 
              :size "auto"
@@ -800,7 +798,6 @@
                      :border-radius "12px"}
              :children [[re-com/h-box 
                          :height "30px"
-                         ;:width "490px"
                          :padding "4px"
                          :size "none"
                          :children [[re-com/box :child "tabflowmaps 0.1.0 - tableau action relationship viewer" 
@@ -863,7 +860,7 @@
                                (tap> [:run? (cstr/lower-case fname)])
                                (when (cstr/ends-with? (cstr/lower-case fname) ".twb")
                                  #_{:clj-kondo/ignore [:redundant-do]}
-                                 (do ;; proc file, reset var first to prevent double fns
+                                 (do ;; proc file, reset var first to prevent double fire
                                    (set! (-> files .-value) "")
                                    (tap> [:saving-csv-to-server fname])
                                    (http/read-file file0 #(re-frame/dispatch [::http/proc-twb fname (str %)]))
@@ -902,7 +899,7 @@
      [(reagent/adapt-react-class zpan/TransformComponent)
       [:div#based
        [:svg
-        {:style {:width "5200px" ;; big ass canvas so nothing gets cut off svg-wise
+        {:style {:width "5200px" ;; big ass "canvas" so nothing gets cut off svg-wise + zoom and pannable
                  :height "20200px"
                  :z-index 9999}}
         (draw-lines coords)]
@@ -919,7 +916,7 @@
              target-worksheet-blocks (for [[_ {:keys [fieldsets flags id name type x y]}]
                                            (get position-map :target-worksheet)]
                                        [box type id name x y flags fieldsets])]
-         [re-com/v-box ;; blocks are position fixed, so v/h-box doesnt matter
+         [re-com/v-box ;; blocks are position fixed, so v/h-box doesnt really matter
           :children [[re-com/v-box :children (into worksheet-blocks worksheet-filter-blocks)] 
                      [re-com/v-box :children action-blocks]
                      [re-com/v-box :children target-worksheet-blocks]]])]]]))
