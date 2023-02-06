@@ -1,15 +1,11 @@
-# tabflow
+# Tableau Flow Maps
 
-A [re-frame](https://github.com/day8/re-frame) application designed to ... well, that part is up to
-you.
+A simple visualizer for your Tableau dashboard actions relationships and how they impact the data flow.
 
-## Getting Started
+![teaser-image2](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/tfm-logo.png?raw=true)
 
-### Project Overview
-
-* Architecture:
-[Single Page Application (SPA)](https://en.wikipedia.org/wiki/Single-page_application)
-Stuff! Things!
+![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
+![teaser-image4](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
 
 ...
 
