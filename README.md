@@ -4,7 +4,9 @@ A simple visualizer for your Tableau dashboard actions relationships and how the
 
 Tableau's dashboard "action" system, when combined with parameters, calculated fields, and filter inputs allows for some very complex interactions to be orchestrated. The problem is that Tableau really doesn't give you a very good way to holistically look at all those UX relationships and how they interact together.
 
-Enter Flow Maps - a simple viewer that attempts to fill this gap - even if only for a knowledge transfer / documentaion sake.
+Enter Flow Maps - a simple viewer that attempts to fill this gap - even if only for a knowledge transfer / documentation sake.
+
+![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb-double.png?raw=true)
 
 ## Flow Maps is trying to answer these kind of questions:
 
@@ -16,33 +18,34 @@ Enter Flow Maps - a simple viewer that attempts to fill this gap - even if only 
 ### When a user triggers a Set Parameter action
 - What are the downstream worksheets affected by this (since they use the param in question - directly or indirectly)
 
-### When a user interacts with a filter widget
-- What worksheets 
+### When a user interacts with a workbook filter widget
+- What worksheets are involved due to shared filters (global, ds-based, selective, etc)
 
 ### And more abstractly: Do any of these interactions clash?
 
+...
 
-![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb-double.png?raw=true)
 
-Try it out live at http://tabflowmaps.com/ 
+
+
 
 ![teaser-image2](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/tfm-logo.png?raw=true)
 
-## Backend server required also
-
-https://github.com/ryrobes/tabflowmapssvc 
+- Try it out live at http://tabflowmaps.com/ 
 
 ## To Compile
 
-TODO
+-     npm install ; npm run release
+- output will be in resources/public 
+
+## Backend service required
+
+- https://github.com/ryrobes/tabflowmapssvc
+- see instructions there
 
 ...
 
-## To Develop
 
-This app is in 2 parts, one small backend service to convert the XML into EDN and host the front-end web code - and the front-end web code itself (this repo). TODO
-
-...
 
 ## License
 

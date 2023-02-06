@@ -5,12 +5,15 @@
    [ajax.edn :as ajax-edn]
    ;[cljs.tools.reader :refer [read-string]]
    [clojure.string :as cstr]
+   [tabflow.config :as config]
    [day8.re-frame.http-fx]))
 
-(def server-http-port 8888)
-(def url-base (str (cstr/join ":" (drop-last (cstr/split 
-                 (.. js/document -location -href) #":"))) ":" server-http-port)) 
-;; no trailing slash
+(def server-http-port 8888) ;; hardcoded for dev
+(def url-base (cond config/debug? ;; in dev mode fe and be have diff ports 
+                    (str (cstr/join ":" (drop-last (cstr/split
+                                                    (.. js/document -location -href) #":"))) ":" server-http-port)
+                    :else (let [b (str (.. js/document -location -href))]
+                            (if (cstr/ends-with? b "/") (cstr/join "" (drop-last b)) b))))
 
 (defn read-file [file callback] ;; annoying because FileReader is async
   (let [js-file-reader (js/FileReader.)]
@@ -46,7 +49,8 @@
  ::load ;; load a pre-processed TWB->EDN file from webroot, not from REST server.
  (fn [{:keys [db]} [_]]
    (let [method :get
-         url (str url-base "/US_Superstore_14.twb.edn")]
+         url "/US_Superstore_14.twb.edn"]
+     (js/console.log url-base)
      {:db   (assoc-in db [:http-reqs :get-twb]
                       {:status "running"
                        :url url
