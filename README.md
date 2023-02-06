@@ -2,10 +2,25 @@
 
 A simple visualizer for your Tableau dashboard actions relationships and how they impact the data flow.
 
+![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
+![teaser-image4](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb1.png?raw=true)
+
+## Try it out live at http://tabflowmaps.com/ 
+
 ![teaser-image2](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/tfm-logo.png?raw=true)
 
-![teaser-image3](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
-![teaser-image4](https://github.com/ryrobes/tabflowmaps/blob/master/resources/public/images/ghthumb3.png?raw=true)
+### Small backend required also
+https://github.com/ryrobes/tabflowmapssvc 
+
+## To Compile
+
+TODO
+
+...
+
+## To Develop
+
+This app is in 2 parts, one small backend service to convert the XML into EDN and host the front-end web code - and the front-end web code itself (this repo). TODO
 
 ...
 
